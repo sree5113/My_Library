@@ -1,5 +1,6 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import axios from 'axios';
+import { Platform } from 'react-native';
 
 export interface Book {
   _id?: string; // MongoDB uses _id
@@ -31,17 +32,18 @@ interface BookContextProviderProps {
 
 export const BookContextProvider: React.FC<BookContextProviderProps> = ({ children }) => {
   const [library, setLibrary] = useState<Book[]>([]);
-  const API_URL = 'http://192.168.0.53:5000/api'; // Replace with your backend URL
+  const API_URL = Platform.OS === 'web'
+    ? 'http://localhost:5000/api' // Web browser
+    : 'http://192.168.0.131:5000/api'; // Android/iOS device
   console.log('API URL in BookContext:', API_URL);
 
   const fetchBooks = async () => {
     try {
       const response = await axios.get<Book[]>(`${API_URL}/books`);
-      // Convert dateAdded string to Date object
       const processedData = response.data.map(book => ({
         ...book,
         id: book._id!,
-        dateAdded: book.dateAdded ? new Date(book.dateAdded) : undefined, // Handle potential null/undefined
+        dateAdded: book.dateAdded ? new Date(book.dateAdded) : undefined,
       }));
       setLibrary(processedData);
       console.log('Fetched books:', processedData);
@@ -71,12 +73,9 @@ export const BookContextProvider: React.FC<BookContextProviderProps> = ({ childr
     console.log(`deleteBook function called with ID: ${id}`);
     try {
       const response = await axios.delete(`${API_URL}/books/${id}`);
-      console.log('Backend delete response:', response.data); // Log the backend response
-      setLibrary((prevLibrary) => {
-        const updatedLibrary = prevLibrary.filter((book) => book.id !== id);
-        console.log('Updated local library after delete:', updatedLibrary);
-        return updatedLibrary;
-      });
+      console.log('Backend delete response:', response.data);
+      setLibrary((prevLibrary) => prevLibrary.filter((book) => book.id !== id));
+      console.log('Updated local library after delete:', library.filter((book) => book.id !== id));
     } catch (error) {
       console.error('Error deleting book: ', error);
     }
