@@ -3,12 +3,12 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 
 export interface Book {
-  _id?: string; // MongoDB uses _id
-  id?: string; // Keep a local id for FlatList key
+  _id?: string; 
+  id?: string; 
   title: string;
   author: string;
   info: string;
-  dateAdded?: string | Date; // It can be a string from API or Date after conversion
+  dateAdded?: string | Date; 
   language: string;
 }
 
