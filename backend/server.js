@@ -88,7 +88,7 @@ async function run() {
       }
     });
 
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`Server is running on port: ${port}`);
     });
 
@@ -98,3 +98,5 @@ async function run() {
 }
 
 run().catch(console.dir);
+
+

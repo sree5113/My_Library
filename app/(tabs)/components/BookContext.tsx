@@ -34,7 +34,7 @@ export const BookContextProvider: React.FC<BookContextProviderProps> = ({ childr
   const [library, setLibrary] = useState<Book[]>([]);
   const API_URL = Platform.OS === 'web'
     ? 'http://localhost:5000/api' // Web browser
-    : 'http://192.168.0.131:5000/api'; // Android/iOS device
+    : 'http://192.168.0.114:5000/api'; // Android/iOS device
   console.log('API URL in BookContext:', API_URL);
 
   const fetchBooks = async () => {
